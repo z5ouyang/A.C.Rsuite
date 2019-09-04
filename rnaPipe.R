@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
 if(!require(optparse)) stop("R packages of optparse cannot be installed!")
 
 args <- commandArgs(trailingOnly=TRUE)

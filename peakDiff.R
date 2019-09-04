@@ -1,11 +1,11 @@
 #!/usr/bin/env Rscript
 ## peakDiff.R
 ## initial ----
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
 if(!suppressWarnings(suppressMessages(require(DESeq2)))) BiocManager::install("DESeq2")
 #if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix")
-if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS")
-if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap")
+if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
 
 if(!require(optparse)||!require(DESeq2)||!require(MASS)||!require(pheatmap))#||!require(plotrix)
   stop("R packages of optparse, plotrix, DESeq2, pheatmap, gplots or MASS cannot be installed!")
@@ -104,12 +104,13 @@ strPairwised <- paste(strOutput,"/pairwised/",sep="")
 if(!dir.exists(strPairwised)) dir.create(strPairwised)
 pdf(paste(strOutput,"/pairwised.pdf",sep=""),width=4,height=4)
 par(mar=c(2,2,0,0)+0.2,mgp=c(1,0.1,0),tcl=-0.05)
-imageCOL <- c("#FFFFFFFF","#3300FF","#2D1CFF","#2839FF","#2255FF","#1C71FF","#178EFF","#11AAFF",
-              "#0BC6FF","#06E3FF","#00FFFF","#00FFFF","#17FFE3","#2DFFC6","#44FFAA","#5BFF8E",
-              "#71FF71","#88FF55","#9FFF39","#B5FF1C","#CCFF00",
-              "#CCFF00","#D2F400","#D7E800","#DDDD00","#E3D200","#E8C600","#EEBB00","#F4B000",
-              "#F9A400","#FF9900","#FF9900","#F68800","#EC7700","#E36600","#D95500","#D04400",
-              "#C63300","#BD2200","#B31100","#AA0000")
+#imageCOL <- c("#FFFFFFFF","#3300FF","#2D1CFF","#2839FF","#2255FF","#1C71FF","#178EFF","#11AAFF",
+#              "#0BC6FF","#06E3FF","#00FFFF","#00FFFF","#17FFE3","#2DFFC6","#44FFAA","#5BFF8E",
+#              "#71FF71","#88FF55","#9FFF39","#B5FF1C","#CCFF00",
+#             "#CCFF00","#D2F400","#D7E800","#DDDD00","#E3D200","#E8C600","#EEBB00","#F4B000",
+#             "#F9A400","#FF9900","#FF9900","#F68800","#EC7700","#E36600","#D95500","#D04400",
+#              "#C63300","#BD2200","#B31100","#AA0000")
+imageCOL <- c("#FFFFFFFF",colorpanel(20,"gray","black"))
 for(i in unique(pClass)){
   peakID <- c()
   cat("\t\tExtract activated peaks for",i,"\n")

@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse")
-if(!suppressWarnings(suppressMessages(require(DESeq2)))) install.packages("DESeq2")
-if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap")
-if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS")
-if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(DESeq2)))) BiocManager::install("DESeq2")
+if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix",repos="https://cran.cnr.berkeley.edu/")
 if(!require(optparse) || !require(DESeq2) || !require(pheatmap) || !require(MASS))
   stop("R packages of optparse, pheatmap, MASS, plotrix or DESeq2 cannot be installed!")
 

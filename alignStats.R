@@ -3,7 +3,7 @@
 ## alignStats.R
 ## 
 #############################################
-if(!require(optparse,quietly = T)) install.packages("optparse")
+if(!require(optparse,quietly = T)) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
 if(!require(optparse))
   stop("R packages of optparse cannot be installed!")
 

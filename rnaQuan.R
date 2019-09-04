@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
-if(!require(optparse,quietly = T)) install.packages("optparse")
-if(!require(plot3D,quietly = T)) install.packages("plot3D")
-if(!require(pheatmap,quietly = T)) install.packages("pheatmap")
-if(!require(MASS,quietly = T)) install.packages("MASS")
+if(!require(optparse,quietly = T)) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
+if(!require(plot3D,quietly = T)) install.packages("plot3D",repos="https://cran.cnr.berkeley.edu/")
+if(!require(pheatmap,quietly = T)) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
+if(!require(MASS,quietly = T)) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
 if(!require(optparse) || !require(plot3D) || !require(pheatmap) || !require(MASS,quietly = T))
   stop("R packages of optparse, pheatmap, MASS or plot3D cannot be installed!")
 
