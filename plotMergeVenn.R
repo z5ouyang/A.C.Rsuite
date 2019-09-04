@@ -3,7 +3,12 @@
 ## plotMergeVenn.R
 ##
 ############################
-if(!require(Vennerable,quiet=T)) install.packages("Vennerable")
+if(!require(Vennerable,quiet=T)){
+  if(!require(RBGL,quiet=T)) BiocInstaller::biocLite("RBGL")
+  if(!require(graph,quiet=T)) BiocInstaller::biocLite("graph")
+  devtools::install_github("js229/Vennerable")
+}
+
 if(!require(Vennerable,quiet=T)) stop("Cannot install package 'Vennerable'!")
 args <- commandArgs(trailingOnly=TRUE)
 if(length(args)<1){
