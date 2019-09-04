@@ -4,8 +4,8 @@
 ##
 ############################
 if(!require(Vennerable,quiet=T)){
-  if(!require(RBGL,quiet=T)) BiocManager::biocLite("RBGL")
-  if(!require(graph,quiet=T)) BiocManager::biocLite("graph")
+  if(!require(RBGL,quiet=T)) BiocManager::install("RBGL")
+  if(!require(graph,quiet=T)) BiocManager::install("graph")
   devtools::install_github("js229/Vennerable")
 }
 
