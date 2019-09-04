@@ -3,11 +3,11 @@
 ## initial ----
 if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse")
 if(!suppressWarnings(suppressMessages(require(DESeq2)))) BiocManager::install("DESeq2")
-if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix")
+#if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix")
 if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS")
 if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap")
 
-if(!require(optparse)||!require(plotrix)||!require(DESeq2)||!require(MASS)||!require(pheatmap))
+if(!require(optparse)||!require(DESeq2)||!require(MASS)||!require(pheatmap))#||!require(plotrix)
   stop("R packages of optparse, plotrix, DESeq2, pheatmap, gplots or MASS cannot be installed!")
 
 ## input ------------------
