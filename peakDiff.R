@@ -110,7 +110,10 @@ par(mar=c(2,2,0,0)+0.2,mgp=c(1,0.1,0),tcl=-0.05)
 #             "#CCFF00","#D2F400","#D7E800","#DDDD00","#E3D200","#E8C600","#EEBB00","#F4B000",
 #             "#F9A400","#FF9900","#FF9900","#F68800","#EC7700","#E36600","#D95500","#D04400",
 #              "#C63300","#BD2200","#B31100","#AA0000")
-imageCOL <- c("#FFFFFFFF",colorpanel(20,"gray","black"))
+imageCOL <- c("#FFFFFFFF","#BEBEBE","#B4B4B4","#AAAAAA","#A0A0A0","#969696",
+              "#8C8C8C","#828282","#787878","#6E6E6E","#646464","#5A5A5A",
+              "#505050","#464646","#3C3C3C","#323232","#282828","#1E1E1E",
+              "#141414","#0A0A0A","#000000")
 for(i in unique(pClass)){
   peakID <- c()
   cat("\t\tExtract activated peaks for",i,"\n")
