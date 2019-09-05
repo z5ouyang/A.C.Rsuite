@@ -40,7 +40,7 @@ COL <- res[,2]
 if(ncol(res)>2) kIndex <- strsplit(res[,3],",")
 if(ncol(res)>3) hIndex <- strsplit(res[,4],",")
 names(kIndex) <- names(hIndex) <- basename(strDir)
-strPDF <- paste(dirname(strInput),"/allMotif.pdf",sep="")
+strPDF <- paste(strInput,"_allMotif.pdf",sep="")
 
 pdf(strPDF,width=9)
 par(bg=NA)
