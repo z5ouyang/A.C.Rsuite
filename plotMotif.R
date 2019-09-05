@@ -21,10 +21,11 @@ args <- commandArgs(trailingOnly=TRUE)
 option_list = list(
 )
 opt_parser = OptionParser("\n\t%prog path/to/the/motif/file\nMotif file is a tab separated file with 4 columns and header:\n
+                          \theader:motif\tcol\tknown\tdenovo
                           \t1: path to the motif folder;\n
                           \t2: color of this motif set;\n
-                          \t3: index of known motif separated by ','\n
-                          \t4: index of de novo motif separated by ','",
+                          \t3: index of known motif separated by ',' at least 3\n
+                          \t4: index of de novo motif separated by ',' at least 3",
                           option_list=option_list,prog="peakQuan.R")
 if (length(args)<1){
   print_help(opt_parser)
@@ -37,8 +38,9 @@ strInput <- args[1]
 res <- read.table(strInput,as.is=T,sep="\t",comment.char = "",header=T)
 strDir <- res[,1]
 COL <- res[,2]
-if(ncol(res)>2) kIndex <- strsplit(res[,3],",")
-if(ncol(res)>3) hIndex <- strsplit(res[,4],",")
+kIndex <- strsplit(res[,3],",")
+hIndex <- strsplit(res[,4],",")
+if(length(kIndex)<3||length(hIndex)<3) stop("Please provide at least 3  indexes for motif!")
 names(kIndex) <- names(hIndex) <- basename(strDir)
 strPDF <- paste(strInput,"_allMotif.pdf",sep="")
 
