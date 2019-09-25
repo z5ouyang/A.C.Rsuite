@@ -238,16 +238,12 @@ hubName <- opt$track
 if(nchar(hubName)>2){
   cat("\tStep 7: create a hub",hubName,"for all merge tags, will try to overwrite if it exists\n")
   strCMD <- paste("makeMultiWigHub.pl",hubName,opt$genome,
+                  "-color",paste(apply(col2rgb(sInfo[,1]),2,paste,collapse=","),collapse=" "),
                   "-force -d",paste(strTagDir,collapse=" "))
   cat("\t\t",strCMD,"\n")
   system(paste(strCMD,"2>/dev/null"))
   strHub <- paste("/homer_data/www/html/hubs/",hubName,"/",opt$genome,"/trackDb.txt",sep="")
   if(!file.exists(strHub)) stop("The Hub was NOT created successfully!\n")
-  hubs <- scan(strHub,what="character",sep="\n",quiet=T)
-  for(i in rownames(sInfo)){
-    hubs[grep(paste("track",i),A)+6] <- paste("color",paste(as.vector(col2rgb(sInfo[i,1])), collapse = ","))
-  }
-  cat(paste(hubs,collapse="\n"),file=strHub)
   cat("\t\tAdd hub on ucsc genome browser:\n\t\thttp://homer.ucsd.edu/hubs/",hubName,"/hub.txt\n",sep="")
 }
 
