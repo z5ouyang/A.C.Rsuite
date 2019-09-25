@@ -244,8 +244,8 @@ if(nchar(hubName)>2){
   strHub <- paste("/homer_data/www/html/hubs/",hubName,"/",opt$genome,"/trackDb.txt",sep="")
   if(!file.exists(strHub)) stop("The Hub was NOT created successfully!\n")
   hubs <- scan(strHub,what="character",sep="\n",quiet=T)
-  for(i in rownames(tagInfo)){
-    hubs[grep(paste("track",i),A)+6] <- paste("color",paste(as.vector(col2rgb(tagInfo[i,1])), collapse = ","))
+  for(i in rownames(sInfo)){
+    hubs[grep(paste("track",i),A)+6] <- paste("color",paste(as.vector(col2rgb(sInfo[i,1])), collapse = ","))
   }
   cat(paste(hubs,collapse="\n"),file=strHub)
   cat("\t\tAdd hub on ucsc genome browser:\n\t\thttp://homer.ucsd.edu/hubs/",hubName,"/hub.txt\n",sep="")

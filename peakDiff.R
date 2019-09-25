@@ -124,7 +124,7 @@ for(i in unique(pClass)){
     write.table(cbind(data.frame(res),contrast=paste(i,j,sep="-")),
                 file=strPair,sep="\t",quote=F,col.names=NA)
     xIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange < -opt$logFC
-    yIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange > -opt$logFC
+    yIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange > opt$logFC
     write.table(peakDef[rownames(res)[xIndex],],file=paste(strPair,j,".vs.",i,"_",j,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     write.table(peakDef[rownames(res)[yIndex],],file=paste(strPair,j,".vs.",i,"_",i,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     
