@@ -4,7 +4,7 @@ if(!suppressWarnings(suppressMessages(require(DESeq2)))) BiocManager::install("D
 if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
 if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
 if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix",repos="https://cran.cnr.berkeley.edu/")
-if(!require(optparse) || !require(DESeq2) || !require(pheatmap) || !require(MASS))
+if(!require(optparse) || !require(DESeq2) || !require(pheatmap) || !require(MASS) || !require(plotrix))
   stop("R packages of optparse, pheatmap, MASS, plotrix or DESeq2 cannot be installed!")
 
 args <- commandArgs(trailingOnly=TRUE)
