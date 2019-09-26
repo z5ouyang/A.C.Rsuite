@@ -38,9 +38,8 @@ strInput <- args[1]
 res <- read.table(strInput,as.is=T,sep="\t",comment.char = "",header=T)
 strDir <- res[,1]
 COL <- res[,2]
-kIndex <- unlist(strsplit(res[,3],","))
-hIndex <- unlist(strsplit(res[,4],","))
-if(length(kIndex)<3||length(hIndex)<3) stop("Please provide at least 3  indexes for motif!")
+kIndex <- strsplit(res[,3],",")
+hIndex <- strsplit(res[,4],",")
 names(kIndex) <- names(hIndex) <- basename(strDir)
 strPDF <- paste(strInput,"_allMotif.pdf",sep="")
 
@@ -95,6 +94,7 @@ for(i in strDir){
     motifR <- motifR[,-1,drop=F]
   }
 }
+if(length(selMotif)<3) stop("Please provide at least 3 indexes in total for known motif!")
 motifP <- motifP[unique(selMotif),,drop=F]
 motifR <- motifR[unique(selMotif),,drop=F]
 
