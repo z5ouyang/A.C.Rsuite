@@ -51,7 +51,7 @@ logos <- list()
 #cat(strDir)
 for(i in strDir){
   i <- gsub("~",normalizePath("~"),i)
-  if(!dir.exists(i)) stop(i,"does NOT exist! Please check the typo.")
+  if(!dir.exists(i)) stop(paste("'",i,"' does NOT exist! Please check the typo.",sep=""))
   strMotif <- paste(i,"/knownResults.txt",sep="")
   if(file.exists(strMotif)){
     cat("Plotting known motif table for",basename(i),"\n")
