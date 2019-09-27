@@ -51,6 +51,7 @@ logos <- list()
 #cat(strDir)
 for(i in strDir){
   i <- gsub("~",normalizePath("~"),i)
+  if(!dir.exists(i)) stop(i,"does NOT exist! Please check the typo.")
   strMotif <- paste(i,"/knownResults.txt",sep="")
   if(file.exists(strMotif)){
     cat("Plotting known motif table for",basename(i),"\n")
@@ -94,6 +95,7 @@ for(i in strDir){
     motifR <- motifR[,-1,drop=F]
   }
 }
+#print(selMotif)
 if(length(selMotif)<3) stop("Please provide at least 3 indexes in total for known motif!")
 motifP <- motifP[unique(selMotif),,drop=F]
 motifR <- motifR[unique(selMotif),,drop=F]
