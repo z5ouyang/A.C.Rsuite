@@ -176,6 +176,10 @@ X <- logT
 for(type in unique(pClass)){
   cat("\t\tworking on",type,"\n")
   ids <- colnames(logT)[pClass==type]
+  if(length(ids)<2){
+    cat("\t\t\tNo replicates, no correlation!\n")
+    next
+  }
   COR <- matrix(1,nrow=length(ids),ncol=length(ids),dimnames=list(ids,ids))
   for(i in ids){
     for(j in ids){

@@ -67,6 +67,10 @@ DESeq2.scatter <- function(X,pClass,strPath,COL,cutOff=4,showX=NULL,logFC=1,padj
                            title="",pSize=1,prefix=""){
   com <- names(COL)
   if(length(com)!=2) stop("The specified category number is NOT 2.")
+  if(sum(table(pClass)<2)){
+    cat("\Ignore comparison of",paste(com,collapse = ".vs."),"for less than 2 replicates\n")
+    return(c())
+  }
   if(!is.null(showX)) Data <- X[apply(showX,1,function(x){sum(x>cutOff)})>1,]
   else Data <- X[apply(X,1,function(x){sum(x>cutOff)})>1,]
   
