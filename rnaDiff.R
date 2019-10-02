@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(rlang)))) install.packages("rlang",repos="https://cran.cnr.berkeley.edu/")
 if(!suppressWarnings(suppressMessages(require(DESeq2)))) BiocManager::install("DESeq2")
 if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
 if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
