@@ -19,7 +19,7 @@ if (length(args)<1){
   print_help(opt_parser)
   stop("path/to/the/sample/definition/file is required.\n", call.=FALSE)
 }
-cat("test\n")
+#cat("test\n")
 strSample <- args[1]
 strDir <- c()
 exps <- read.table(strSample,sep="\t",comment.char="",as.is=T)
