@@ -63,7 +63,6 @@ for(i in 1:nrow(exps)){
   cat("\tAnalysing ",grpID,"\n",sep="")
   tags <- unlist(strsplit(exps[i,3],";"))
   sIDs <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
-  if(length(tags)<2) next
   if(opt$assay=="chip"){
     inputs <- unlist(strsplit(exps[i,5],";"))
   }
@@ -98,6 +97,7 @@ for(i in 1:nrow(exps)){
     names(value) <- key
     peakSumm <- rbind(peakSumm,value)
   }
+  if(length(tags)<2) next
   
   cat("\n\tStep 2: Mergeing all peaks from replicates for",grpID,"\n")
   strMerge <- paste(strTmp,"/",grpID,".peaks",sep="")

@@ -75,6 +75,7 @@ for(i in rownames(tagInfo)){
 }
 names(COL) <- unique(pClass)
 print(COL)
+if(max(table(pClass))<=1) stop("Replicates are needed!")
 ## Obtain the distal peaks -----------------
 cat("\n\tStep 2: Obtain the tags in peaks\n")
 rawTags <- read.table(opt$qantify,as.is=T,sep="\t",header=T,row.names=1,quote="",comment.char="",check.names=F)

@@ -46,7 +46,6 @@ for(i in 1:nrow(exps)){
   cat("\nAnalysing ",grpID,"\n",sep="")
   tags <- unlist(strsplit(exps[i,3],";"))
   sIDs <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
-  if(length(tags)<2) next
   if(opt$assay=="chip"){
     inputs <- unlist(strsplit(exps[i,5],";"))
   }
@@ -67,6 +66,14 @@ for(i in 1:nrow(exps)){
     cat("\t\t",strCMD,"\n")
     #if(!file.exists(tail(strPeak,1)))
     system(paste(strCMD,"2>/dev/null"))
+  }
+  if(length(tags)<2){
+    strAllIDR <- c(strAllIDR,paste(strOutput,grpID,".idr",sep=""))
+    strCMD <- paste("cp",strPeak,tail(strAllIDR,1))
+    cat("\n\tNO REPLICATES: using peak from",sIDs[1]," as IDR peaks\n")
+    cat(strCMD)
+    system(strCMD)
+    next
   }
   ## pair-wised IDR
   strIDRs <- c()
