@@ -17,7 +17,9 @@ option_list = list(
   make_option(c("-t", "--tpm"), type="character", #default="250", 
               help="required. The path to the TPM file which only contains sample columns.", metavar="character"),
   make_option(c("-m", "--minTPM"), type="numeric", default="8", 
-              help="The minumal TPM required in at least 2 samples", metavar="character")
+              help="The minumal TPM required in at least 2 samples", metavar="character"),
+  make_option(c("-f", "--logFC"), type="numeric", default="1", 
+              help="The minumal absolute log2 fold change to be considered as differentially expressed genes", metavar="character")
 )
 opt_parser = OptionParser("\n\t%prog path/to/the/sample/definition/file [options]",
                           option_list=option_list,prog="rnaDiff.R")
@@ -187,7 +189,7 @@ for(i in unique(pClass)){
     DEG <- c(DEG,DESeq2.scatter(rawC[,index],pClass[index],opt$out,
                                 COL[c(i,j)],cutOff=opt$minTPM,
                                 showX=rawT[,index],
-                                logFC=1,title="log2(TPM)"))
+                                logFC=opt$logFC,title="log2(TPM)"))
   }
 }
 ## overall differential genes ------------------
@@ -200,14 +202,14 @@ if(length(DEG)>3){
                "#8E0C25","#67001F")
   pdf(paste(opt$out,"/overall.heatmap.pdf",sep=""),height=9)
   pheatmap(log2(1+rawT[DEG,]),annotation_colors=list(grp=COL),fontsize_row=1,
-           color = heatCol,
+           color = heatCol,main=paste("Overall on",length(DEG),"DEGs (TPM)"),
            annotation_col = data.frame(row.names=colnames(rawT),grp=pClass))
   pheatmap(log2(1+rawT[DEG,]),annotation_colors=list(grp=COL),scale="row",fontsize_row=1,
-           color = heatCol,
+           color = heatCol,main=paste("Overall on",length(DEG),"DEGs (Z-score on TPM)"),
            annotation_col = data.frame(row.names=colnames(rawT),grp=pClass))
   pheatmap(log2(1+rawT[DEG,]),annotation_colors=list(grp=COL),scale="row",cluster_cols=F,
            labels_row=rep("",length(DEG)),
-           color = heatCol,
+           color = heatCol,main=paste("Overall on",length(DEG),"DEGs (Z-score on TPM)"),
            annotation_col = data.frame(row.names=colnames(rawT),grp=pClass))
   a <- dev.off()
 }
