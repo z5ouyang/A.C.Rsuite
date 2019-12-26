@@ -194,6 +194,7 @@ for(i in unique(pClass)){
 }
 ## overall differential genes ------------------
 DEG <- unique(DEG)
+write.csv(matrix(DEG,ncol=1),file=paste(opt$out,"/overall.heatmap.txt",sep=""),quote=F,col.names=F)
 if(length(DEG)>3){
   cat("\n\tStep 3: summarize all differential genes to plot heatmap\n")
   heatCol <- c("#053061","#134C88","#2268AD","#3480B9","#4B98C5","#74B2D4",
