@@ -16,7 +16,8 @@ if(length(args)<1){
   cat("e.g.: plotMergeVenn.R mergedVenn\n")
   q()
 }
-strF <- args[1]#"~/scratch/Lung/Results/IP/ATAC/IDR/mergeIDRs/IMmono.txt"#
+strF <- args[1]
+#strF <- "~/scratch/YA/H3k27ac_NCorWT/DCA/withATAC/ATAC_H3K27ac.venn"#args[1]#
 if(file.exists(strF)){
   A <- read.table(strF,sep="\t",header=T,check.names=F,as.is=T)
   colnames(A) <- gsub("_idr.txt","",basename(colnames(A)))
@@ -26,10 +27,11 @@ if(file.exists(strF)){
     tmp <- rep(0,length(setNames))
     tmp[nchar(A[i,1:length(setNames)])>0] <- 1
     ids <- c(ids,paste(tmp,collapse=""))
-    w <- c(w,A[,"Total"])
+    w <- c(w,A[i,"Total"])
   }
   names(w) <- ids
   V3a <- Venn(SetNames=setNames,Weight=w)
+  Weights(V3a)[is.na(Weights(V3a))] <- 0
   #print(V3a)
   pdf(paste(gsub("\\.txt","",strF),".pdf",sep=""))
   if(length(setNames)>2)

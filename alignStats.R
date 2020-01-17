@@ -21,13 +21,19 @@ if (length(args)<1){
 }
 #cat("test\n")
 strSample <- args[1]
-strDir <- c()
-exps <- read.table(strSample,sep="\t",comment.char="",as.is=T)
-for(i in 1:nrow(exps)){
-  grpID <- exps[i,1]
-  one <- unlist(strsplit(exps[i,3],";"))
-  names(one) <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
-  strDir <- c(strDir,one)
+if(dir.exists(strSample)){
+  strDir <- list.dirs(strSample,recursive = F)
+  names(strDir) <- basename(strDir)
+}else{
+  strDir <- c()
+  exps <- read.table(strSample,sep="\t",comment.char="",as.is=T)
+  for(i in 1:nrow(exps)){
+    grpID <- exps[i,1]
+    one <- unlist(strsplit(exps[i,3],";"))
+    names(one) <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
+    strDir <- c(strDir,one)
+  }
+  
 }
 
 #cat("Extract alignment stats from:\n",paste(strDir,collapse="\n"),"\n",sep="\t")
