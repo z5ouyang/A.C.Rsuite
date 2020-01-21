@@ -30,7 +30,11 @@ if(dir.exists(strSample)){
   for(i in 1:nrow(exps)){
     grpID <- exps[i,1]
     one <- unlist(strsplit(exps[i,3],";"))
-    names(one) <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
+    oneN <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
+    if(length(one)!=length(oneN)){
+      stop(paste("Number of Tag directories (",length(one),") is different from sample ID name (",length(oneN),") for ",grpID,sep=""))
+    }
+    names(one) <- oneN
     strDir <- c(strDir,one)
   }
   
