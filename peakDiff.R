@@ -117,17 +117,25 @@ peakDef <- rawTags[rownames(distalC),1:4]
 write.table(peakDef,file=paste(strOutput,"/allPeaks.peak",sep=""),
             sep="\t",quote=F,col.names=F)
 pheno <- data.frame(row.names = colnames(distalC),grp=pClass)
-D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(distalC),dimnames=dimnames(distalC)),
-                            colData=pheno,
-                            design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
-dds <- DESeq(D,betaPrior=TRUE,quiet=T)
-#print(colData(dds))
+
 if(opt$assay=="chip"){
-  cat("\t\tsequence depth was set to be the library size in DESeq2 for ChIP\n")
-  colData(dds)$sizeFactor <- floor(max(libSize)/1e7)*1e7/libSize[rownames(colData(dds))]
-  dds <- DESeq(dds,quiet=T)
-  #print(colData(dds))
+  cat("\t\tsequence depth was set to be the library size normalization for ChIP, \n\t\tthis is consistent with the track\n")
+  nf <- matrix(0,nrow=length(libSize),ncol=length(libSize),dimnames = list(names(libSize),names(libSize)))
+  diag(nf) <- floor(max(libSize)/1e7)*1e7/libSize
+  distalC <- distalC%*%nf
+  D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(distalC),dimnames=dimnames(distalC)),
+                              colData=pheno,
+                              design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
+  dds <- DESeq(D,betaPrior=TRUE,quiet=T)
+  colData(dds)$sizeFactor <- 1
+  dds <- DESeq(dds,betaPrior=TRUE,quiet=T)
+}else{
+  D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(distalC),dimnames=dimnames(distalC)),
+                              colData=pheno,
+                              design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
+  dds <- DESeq(D,betaPrior=TRUE,quiet=T)
 }
+
 normP <- log2(counts(dds,normalized=T)+1)
 ## save the results for each pair-wised comparison 
 allDBP <- strUpPeak <- c()
