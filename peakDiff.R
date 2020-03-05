@@ -1,16 +1,30 @@
 #!/usr/bin/env Rscript
 ## peakDiff.R
 ## initial ----
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(rlang)))) install.packages("rlang",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(DESeq2)))) BiocManager::install("DESeq2")
-#if(!suppressWarnings(suppressMessages(require(plotrix)))) install.packages("plotrix")
-if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
+loadPeakDiff <- function(){
+  if(!require(optparse)){
+    install.packages("optparse",repos="https://cloud.r-project.org/")
+    if(!require(optparse)) stop("Cannot install optparse")
+  }
+  if(!require(rlang)){
+    install.packages("rlang",repos="https://cloud.r-project.org/")
+    if(!require(rlang)) stop("Cannot install rlang")
+  }
+  if(!require(MASS)){
+    install.packages("MASS",repos="https://cloud.r-project.org/")
+    if(!require(MASS)) stop("Cannot install MASS")
+  }
+  if(!require(pheatmap)){
+    install.packages("pheatmap",repos="https://cloud.r-project.org/")
+    if(!require(pheatmap)) stop("Cannot install pheatmap")
+  }
+  if(!require(DESeq2)){
+    BiocManager::install("DESeq2")
+    if(!require(DESeq2)) stop("Cannot install DESeq2")
+  }
+}
 
-if(!require(optparse)||!require(DESeq2)||!require(MASS)||!require(pheatmap))#||!require(plotrix)
-  stop("R packages of optparse, plotrix, DESeq2, pheatmap, gplots or MASS cannot be installed!")
-
+suppressWarnings(suppressMessages(loadPeakDiff()))
 ## input ------------------
 args <- commandArgs(trailingOnly=TRUE)
 
@@ -107,9 +121,12 @@ D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(dista
                             colData=pheno,
                             design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
 dds <- DESeq(D,betaPrior=TRUE,quiet=T)
+#print(colData(dds))
 if(opt$assay=="chip"){
+  cat("\t\tsequence depth was set to be the library size in DESeq2 for ChIP\n")
   colData(dds)$sizeFactor <- floor(max(libSize)/1e7)*1e7/libSize[rownames(colData(dds))]
-  dds <- DESeq(D,quiet=T)
+  dds <- DESeq(dds,quiet=T)
+  #print(colData(dds))
 }
 normP <- log2(counts(dds,normalized=T)+1)
 ## save the results for each pair-wised comparison 
@@ -117,7 +134,7 @@ allDBP <- strUpPeak <- c()
 strPairwised <- paste(strOutput,"/pairwised/",sep="")
 if(!dir.exists(strPairwised)) dir.create(strPairwised)
 pdf(paste(strOutput,"/pairwised.pdf",sep=""),width=4,height=4)
-par(mar=c(2,2,0,0)+0.2,mgp=c(1,0.1,0),tcl=-0.05)
+par(mar=c(2,2,2,0)+0.2,mgp=c(1,0.1,0),tcl=-0.05)
 #imageCOL <- c("#FFFFFFFF","#3300FF","#2D1CFF","#2839FF","#2255FF","#1C71FF","#178EFF","#11AAFF",
 #              "#0BC6FF","#06E3FF","#00FFFF","#00FFFF","#17FFE3","#2DFFC6","#44FFAA","#5BFF8E",
 #              "#71FF71","#88FF55","#9FFF39","#B5FF1C","#CCFF00",
