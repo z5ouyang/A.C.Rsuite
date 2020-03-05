@@ -77,7 +77,7 @@ if(system(strCMD)!=0) stop("Error in Quantifying IDR peaks for each sample!")
 cat("\nFind differential peaks for pair-wised groups: --------------------\n")
 strAnno <- paste(strOutput,"peakQuan/allRawTags.txt",sep="")
 strCMD <- paste("peakDiff.R",strSample,
-                "-o",paste(strOutput,"/peakDiff/",sep=""),"-g",opt$genome,
+                "-o",paste(strOutput,"/peakDiff/",sep=""),"-g",opt$genome,"-a",opt$assay,
                 "-q",strAnno,"-d",opt$distal,
                 "-c",opt$cutoff,"-m",opt$maxPeak,
                 "-l",opt$logFC,"-p",opt$padj)

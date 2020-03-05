@@ -19,6 +19,8 @@ option_list = list(
               help="Output directory path [default= %default].", metavar="character"),
   make_option(c("-g", "--genome"), type="character", default="mm10", 
               help="The genome of the sequeces came from, mm10, hg38 [default= %default]", metavar="character"),
+  make_option(c("-a", "--assay"), type="character", default="atac", 
+              help="The assay type atac, chip and (future: histone) [default= %default], if chip, DESeq library size will be set to sequence depth instead of total tags in peaks", metavar="character"),
   make_option(c("-q", "--qantify"), type="character", #default="", 
               help="The full path to the peak qantification file [default= %default].", metavar="character"),
   make_option(c("-d", "--distal"), type="numeric", default="3000", 
@@ -82,8 +84,14 @@ rawTags <- read.table(opt$qantify,as.is=T,sep="\t",header=T,row.names=1,quote=""
 cat("\t\tTotal peaks:",nrow(rawTags),"\n")
 rawC <- as.matrix(rawTags[,-(1:18)])
 if(ncol(rawC)!=length(pClass)) stop(paste("ERROR:",opt$qantify,"(",ncol(rawC),") contains different sample number from the sample file(",strSample,")."))
-write.table(cbind(idInUse=sID,tagName=basename(sapply(strsplit(colnames(rawC)," "),head,1)),group=pClass),file=paste(strOutput,"grpInfo.txt",sep=""),sep="\t",row.names=F)
-colnames(rawC) <- sID
+libSize <- as.numeric(sapply(strsplit(sapply(strsplit(colnames(rawC),"\\("),tail,1),"\\."),head,1))
+if(opt$assay=="chip"){
+  write.table(cbind(idInUse=sID,tagName=basename(sapply(strsplit(colnames(rawC)," "),head,1)),group=pClass,libSize=libSize),
+              file=paste(strOutput,"grpInfo.txt",sep=""),sep="\t",row.names=F)
+}else{
+  write.table(cbind(idInUse=sID,tagName=basename(sapply(strsplit(colnames(rawC)," "),head,1)),group=pClass),file=paste(strOutput,"grpInfo.txt",sep=""),sep="\t",row.names=F)
+}
+names(libSize) <- colnames(rawC) <- sID
 
 distalC <- rawC[is.na(rawTags$'Distance to TSS')|abs(rawTags$'Distance to TSS')>distal,]
 if(!is.null(opt$tss)) distalC <- rawC[!(is.na(rawTags$'Distance to TSS'))|abs(rawTags$'Distance to TSS')<distal,]
@@ -99,6 +107,10 @@ D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(dista
                             colData=pheno,
                             design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
 dds <- DESeq(D,betaPrior=TRUE,quiet=T)
+if(opt$assay=="chip"){
+  colData(dds)$sizeFactor <- floor(max(libSize)/1e7)*1e7/libSize[rownames(colData(dds))]
+  dds <- DESeq(D,quiet=T)
+}
 normP <- log2(counts(dds,normalized=T)+1)
 ## save the results for each pair-wised comparison 
 allDBP <- strUpPeak <- c()
