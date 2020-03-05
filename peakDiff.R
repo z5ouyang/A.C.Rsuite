@@ -172,8 +172,7 @@ for(i in unique(pClass)){
     Col[yIndex] <- COL[i]
     x <- apply(normP[rownames(res),pClass==j,drop=F],1,mean)
     y <- apply(normP[rownames(res),pClass==i,drop=F],1,mean)
-    xlim <- range(x)
-    ylim <- range(y)
+    ylim <- xlim <- range(c(x,y))
     plot(c(),c(),xlab=j,ylab=i,xlim=xlim,ylim=ylim,main="log2 Mean normalized tag")
     for(k in c("gray",COL[c(i,j)])){
       index <- rep(T,sum(Col==k))
