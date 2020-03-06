@@ -121,7 +121,9 @@ pheno <- data.frame(row.names = colnames(distalC),grp=pClass)
 if(opt$assay=="chip"){
   cat("\t\tsequence depth was set to be the library size normalization for ChIP, \n\t\tthis is consistent with the track\n")
   nf <- matrix(0,nrow=length(libSize),ncol=length(libSize),dimnames = list(names(libSize),names(libSize)))
-  diag(nf) <- floor(max(libSize)/1e6)*1e6/libSize
+  if(max(libSize)>1e7) diag(nf) <- floor(max(libSize)/1e7)*1e7/libSize
+  else if(max(libSize)>1e6) diag(nf) <- floor(max(libSize)/1e6)*1e6/libSize
+  else stop("Sequencing is TOO shallow (<1M), diff analysis cannot be performed reliably!")
   distalC <- distalC%*%nf
   D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(distalC),dimnames=dimnames(distalC)),
                               colData=pheno,
