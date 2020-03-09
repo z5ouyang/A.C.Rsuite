@@ -56,10 +56,10 @@ for(i in names(strDir)){
   }
   strLog <- list.files(strDir[i],"bowtie2.log$",full.names=T)
   if(length(strLog)==1){
-    sStat <- scan(strLog,character(),sep=" ",quiet=T)
-    sStat <- as.numeric(sStat[c(grep("reads;",sStat)-1,
-                                grep("exactly",sStat)-3,
-                                grep(">1",sStat)-3)])
+    res <- readLines(strLog)
+    sStat <- as.numeric(c(sapply(strsplit(res[1]," "),head,1),
+               sapply(strsplit(grep("exactly 1 time",res,value=T)[1]," "),function(x){return(x[nchar(x)>0][1])}),
+               sapply(strsplit(grep(">1 time",res,value=T)[1]," "),function(x){return(x[nchar(x)>0][1])})))
     stat[i,1:4] <- c(sStat[1:2],sStat[2]/sStat[1],sStat[3])
   }
   res <- read.table(paste(strDir[i],"/tagInfo.txt",sep=""),sep="\t",as.is=T,header=T)
