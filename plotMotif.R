@@ -26,10 +26,11 @@ opt_parser = OptionParser("\n\t%prog path/to/the/motif/file\nMotif file is a tab
                           \t2: color of this motif set;\n
                           \t3: index of known motif separated by ',' at least 3\n
                           \t4: index of de novo motif separated by ',' at least 3",
-                          option_list=option_list,prog="peakQuan.R")
+                          option_list=option_list,prog="plotMotif.R")
 if (length(args)<1){
   print_help(opt_parser)
-  stop("path/to/the/motif/file\nMotif file is required.\n", call.=FALSE)
+  args[1] <- "../Motif_PGC1b_Day4_up_or_down_bg_up_or_down.txt"
+  #stop("path/to/the/motif/file\nMotif file is required.\n", call.=FALSE)
 }
 
 ## input ----
@@ -120,7 +121,7 @@ clusterCall <- function(hc, mat){
   dend = reorder(as.dendrogram(hc), wts = sv)
   as.hclust(dend)
 }
-sMotif <- sort(motifP[motifP!=0])
+sMotif <- sort(unique(motifP[motifP!=0]))
 heatCOL <- colorRampPalette(brewer.pal(n = 7, name ="Oranges"))(min(length(sMotif)-2,10))#RdYlBu
 br <- c(0,sMotif[floor(seq(1,length(sMotif)-1,length.out=length(heatCOL)-1))]-min(diff(sMotif))/10,max(sMotif)+min(diff(sMotif))/10)
 pHeat <- pheatmap(motifP,cluster_cols=F,annotation_colors=list(grp=COL),clustering_method="ward.D",
