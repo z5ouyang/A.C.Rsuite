@@ -29,8 +29,8 @@ opt_parser = OptionParser("\n\t%prog path/to/the/motif/file\nMotif file is a tab
                           option_list=option_list,prog="plotMotif.R")
 if (length(args)<1){
   print_help(opt_parser)
-  args[1] <- "../Motif_PGC1b_Day4_up_or_down_bg_up_or_down.txt"
-  #stop("path/to/the/motif/file\nMotif file is required.\n", call.=FALSE)
+  #args[1] <- "../Motif_PGC1b_Day4_up_or_down_bg_up_or_down.txt"
+  stop("path/to/the/motif/file\nMotif file is required.\n", call.=FALSE)
 }
 
 ## input ----
