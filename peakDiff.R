@@ -39,7 +39,7 @@ option_list = list(
               help="The full path to the peak qantification file [default= %default].", metavar="character"),
   make_option(c("-d", "--distal"), type="numeric", default="3000", 
               help="The distance from TSS, peaks outside will be considered [default= %default]", metavar="numeric"),
-  make_option(c("-t", "--tss"), type="numeric", #default="3000", 
+  make_option(c("-t", "--tss"), type="numeric", default=NULL, 
               help="The distance from TSS, peaks within will be considered. If it is provided, '-d/--distal' will be ignored.", metavar="numeric"),
   make_option(c("-c", "--cutoff"), type="numeric", default="4", 
               help="The cutoff value of tags of a peak [default= %default]", metavar="numeric"),
@@ -108,7 +108,10 @@ if(opt$assay=="chip"){
 names(libSize) <- colnames(rawC) <- sID
 
 distalC <- rawC[is.na(rawTags$'Distance to TSS')|abs(rawTags$'Distance to TSS')>distal,]
-if(!is.null(opt$tss)) distalC <- rawC[!(is.na(rawTags$'Distance to TSS'))|abs(rawTags$'Distance to TSS')<opt$tss,]
+if(!is.null(opt$tss)){
+  cat("\t\tConsidering within TSS",opt$tss,"\n")
+  distalC <- rawC[!(is.na(rawTags$'Distance to TSS'))&abs(rawTags$'Distance to TSS')<opt$tss,]
+}
 distalC <- distalC[apply(distalC,1,function(x){return(sum(x>opt$cutoff))})>1,]
 cat("\t\tTotal of",nrow(distalC),"peaks to be considered\n")
 ## comparison ------------------------------
