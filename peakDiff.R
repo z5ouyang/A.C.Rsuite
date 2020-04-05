@@ -108,7 +108,7 @@ if(opt$assay=="chip"){
 names(libSize) <- colnames(rawC) <- sID
 
 distalC <- rawC[is.na(rawTags$'Distance to TSS')|abs(rawTags$'Distance to TSS')>distal,]
-if(!is.null(opt$tss)) distalC <- rawC[!(is.na(rawTags$'Distance to TSS'))|abs(rawTags$'Distance to TSS')<distal,]
+if(!is.null(opt$tss)) distalC <- rawC[!(is.na(rawTags$'Distance to TSS'))|abs(rawTags$'Distance to TSS')<opt$tss,]
 distalC <- distalC[apply(distalC,1,function(x){return(sum(x>opt$cutoff))})>1,]
 cat("\t\tTotal of",nrow(distalC),"peaks to be considered\n")
 ## comparison ------------------------------
