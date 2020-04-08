@@ -60,6 +60,7 @@ strCMD <- paste("rnaDiff.R",strSample,"-o",paste(strOutput,"rnaDiff/",sep=""),
 cat(strCMD,"\n")
 if(system(strCMD)!=0) stop("Error in Finding differential expressed genes for pair-wised groups!")
 
+warnings()
 ## finish -----------------
 cat("\nRNAseq pipeline finished successfully!\n")
 
