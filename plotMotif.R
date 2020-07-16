@@ -5,14 +5,14 @@
 #########################################
 ## findMotifsGenome.pl XXX_induced.txt genome ./XXX/ -size given -mknown /home/z5ouyang/src/data/all_threshold_0.5.motif -bg ./XXX_bg.txt
 ##
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(grImport,quietly=T)))) install.packages("grImport",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(gridExtra,quietly=T)))) install.packages("gridExtra",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(pheatmap,quietly=T)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(RColorBrewer,quietly=T)))) install.packages("RColorBrewer",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(colorspace,quietly=T)))) install.packages("colorspace",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(ggplot2,quietly=T)))) install.packages("ggplot2",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(htmltab,quietly = T)))) install.packages("htmltab",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(grImport,quietly=T)))) install.packages("grImport",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(gridExtra,quietly=T)))) install.packages("gridExtra",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(pheatmap,quietly=T)))) install.packages("pheatmap",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(RColorBrewer,quietly=T)))) install.packages("RColorBrewer",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(colorspace,quietly=T)))) install.packages("colorspace",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(ggplot2,quietly=T)))) install.packages("ggplot2",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(htmltab,quietly = T)))) install.packages("htmltab",repos="https://cloud.r-project.org/")
 
 if(!require(optparse)||!require(grImport)||!require(gridExtra)||!require(pheatmap)||!require(RColorBrewer)||!require(colorspace)||!require(ggplot2)||!require(htmltab))
   stop("R packages of optparse, grImport, gridExtra, pheatmap, RColorBrewer, colorspace, ggplot2 or htmltab cannot be installed!")

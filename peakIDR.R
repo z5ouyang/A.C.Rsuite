@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cloud.r-project.org/")
 if(!require(optparse))
   stop("R packages of reshape2, MASS, gplots or optparse cannot be installed!")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 ## initial ----
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cloud.r-project.org/")
 if(!require(optparse))
   stop("R packages of optparse cannot be installed!")
 

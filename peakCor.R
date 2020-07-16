@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cran.cnr.berkeley.edu/")
-if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cran.cnr.berkeley.edu/")
+if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("optparse",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(MASS)))) install.packages("MASS",repos="https://cloud.r-project.org/")
+if(!suppressWarnings(suppressMessages(require(pheatmap)))) install.packages("pheatmap",repos="https://cloud.r-project.org/")
 if(!require(optparse) || !require(MASS) || !require(pheatmap))
   stop("R packages of pheatmap, MASS or optparse cannot be installed!")
 
