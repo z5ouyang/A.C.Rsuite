@@ -85,7 +85,12 @@ cat("\n\tStep 1: Read the sample group information\n")
 tagInfo <- read.table(strSample,sep="\t",row.names=1,as.is = T,comment.char = "")
 sID <- COL <- pClass <- c()
 for(i in rownames(tagInfo)){
-  sID <- c(sID,paste(i,unlist(strsplit(tagInfo[i,3],";")),sep="_"))
+  oneID <- paste(i,unlist(strsplit(tagInfo[i,3],";")),sep="_")
+  oneTag <- unlist(strsplit(tagInfo[i,2],";"))
+  message("\t",i)
+  message("\t\tTag directory number:",length(oneTag),"; sample name number:",length(oneID))
+  if(length(oneTag)!=length(oneID)) stop("Tags are not matching with sample Name")
+  sID <- c(sID,oneID)  
   pClass <- c(pClass,rep(i,length(sID)-length(pClass)))
   COL <- c(COL,tagInfo[i,1])
 }

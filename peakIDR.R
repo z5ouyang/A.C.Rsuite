@@ -46,6 +46,9 @@ for(i in 1:nrow(exps)){
   cat("\nAnalysing ",grpID,"\n",sep="")
   tags <- unlist(strsplit(exps[i,3],";"))
   sIDs <- paste(grpID,unlist(strsplit(exps[i,4],";")),sep="_")
+  message("\t\tTag directory number:",length(tags),"; sample name number:",length(sIDs))
+  if(length(tags)!=length(sIDs)) stop("Tags are not matching with sample Name")
+
   if(opt$assay=="chip"){
     inputs <- unlist(strsplit(exps[i,5],";"))
   }

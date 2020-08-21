@@ -52,6 +52,14 @@ opt$homer <- trimws(opt$homer)
 ## ChIP & Histome:
 ## Column 5: (inputTag1;inputTag2;...)
 sInfo <- read.table(strSample,sep="\t",comment.char="",row.names=1,as.is = T)
+for(i in rownames(sInfo)){
+  message("\t",i)
+  tags <- unlist(strsplit(sInfo[,2],";"))
+  sIDs <- unlist(strsplit(sInfo[,3],";"))
+  message("\t\tTag directory number:",length(tags),"; sample name number:",length(sIDs))
+  if(length(tags)!=length(sIDs)) stop("Tags are not matching with sample Name")
+
+}
 
 ## check the provided peaks----
 strTmp <- paste(strOutput,"peakQuan_tmp/",sep="")
