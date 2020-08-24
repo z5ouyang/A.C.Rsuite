@@ -88,6 +88,7 @@ for(i in 1:nrow(exps)){
       cat("\t\t",strCMD,"\n")
       #if(!file.exists(tail(strIDRs,1)))
       system(paste(strCMD,"2>/dev/null"))
+      if(!file.exists(tail(strIDRs,1))) stop(paste("IDR failed for",tail(strIDRs,1),"\nrerun the command again might solve the problem!"))
     }
   }
   ## merge all pair-wised IDR peaks
