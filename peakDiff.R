@@ -41,8 +41,8 @@ option_list = list(
               help="The distance from TSS, peaks outside will be considered [default= %default]", metavar="numeric"),
   make_option(c("-t", "--tss"), type="numeric", default=NULL, 
               help="The distance from TSS, peaks within will be considered. If it is provided, '-d/--distal' will be ignored.", metavar="numeric"),
-  make_option(c("-c", "--cutoff"), type="numeric", default="4", 
-              help="The cutoff value of tags of a peak [default= %default]", metavar="numeric"),
+  make_option(c("-c", "--minNormTag"), type="numeric", default="4", 
+              help="The minimal normalized tag counts of a peak [default= %default]", metavar="numeric"),
   make_option(c("-m", "--maxPeak"), type="numeric", default="10000", 
               help="The maximum number of peaks to include in the heatmap [default= %default]", metavar="numeric"),
   make_option(c("-l", "--logFC"), type="numeric", default="1", 
@@ -112,35 +112,44 @@ if(opt$assay=="chip"){
 }
 names(libSize) <- colnames(rawC) <- sID
 
-distalC <- rawC[is.na(rawTags$'Distance to TSS')|abs(rawTags$'Distance to TSS')>distal,]
+peakC <- rawC[is.na(rawTags$'Distance to TSS')|abs(rawTags$'Distance to TSS')>distal,]
 if(!is.null(opt$tss)){
   cat("\t\tConsidering within TSS",opt$tss,"\n")
-  distalC <- rawC[!(is.na(rawTags$'Distance to TSS'))&abs(rawTags$'Distance to TSS')<opt$tss,]
+  peakC <- rawC[!(is.na(rawTags$'Distance to TSS'))&abs(rawTags$'Distance to TSS')<opt$tss,]
 }
-distalC <- distalC[apply(distalC,1,function(x){return(sum(x>opt$cutoff))})>1,]
-cat("\t\tTotal of",nrow(distalC),"peaks to be considered\n")
+
+
+peakC <- peakC[apply(peakC,1,function(x){return(sum(x>opt$cutoff))})>1,]
+#### obtain the normalized counts -----------------------
+nf <- matrix(0,nrow=length(libSize),ncol=length(libSize),dimnames = list(names(libSize),names(libSize)))
+if(max(libSize)>1e7){
+  diag(nf) <- floor(max(libSize)/1e7)*1e7/libSize
+}else if(max(libSize)>1e6){
+  diag(nf) <- floor(max(libSize)/1e6)*1e6/libSize
+}else stop("Sequencing is TOO shallow (<1M), diff analysis cannot be performed reliably!")
+normC <- peakC%*%nf
+peakC <- peakC[apply(normC,1,function(x){return(sum(x>opt$minNormTag))})>1,]
+
+
+cat("\t\tTotal of",nrow(peakC),"peaks to be considered\n")
 ## comparison ------------------------------
 cat("\n\tStep 3: Use DESeq2 to identify the pair-wised different peak heights\n")
-peakDef <- rawTags[rownames(distalC),1:4]
+peakDef <- rawTags[rownames(peakC),1:4]
 write.table(peakDef,file=paste(strOutput,"/allPeaks.peak",sep=""),
             sep="\t",quote=F,col.names=F)
-pheno <- data.frame(row.names = colnames(distalC),grp=pClass)
+pheno <- data.frame(row.names = colnames(peakC),grp=pClass)
 
 if(opt$assay=="chip"){
   cat("\t\tsequence depth was set to be the library size normalization for ChIP, \n\t\tthis is consistent with the track\n")
-  nf <- matrix(0,nrow=length(libSize),ncol=length(libSize),dimnames = list(names(libSize),names(libSize)))
-  if(max(libSize)>1e7) diag(nf) <- floor(max(libSize)/1e7)*1e7/libSize
-  else if(max(libSize)>1e6) diag(nf) <- floor(max(libSize)/1e6)*1e6/libSize
-  else stop("Sequencing is TOO shallow (<1M), diff analysis cannot be performed reliably!")
-  distalC <- distalC%*%nf
-  D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(distalC),dimnames=dimnames(distalC)),
+  peakC <- normC
+  D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(peakC),nrow=nrow(peakC),dimnames=dimnames(peakC)),
                               colData=pheno,
                               design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
   dds <- DESeq(D,betaPrior=TRUE,quiet=T)
   colData(dds)$sizeFactor <- 1
   dds <- DESeq(dds,betaPrior=TRUE,quiet=T)
 }else{
-  D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(distalC),nrow=nrow(distalC),dimnames=dimnames(distalC)),
+  D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(peakC),nrow=nrow(peakC),dimnames=dimnames(peakC)),
                               colData=pheno,
                               design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
   dds <- DESeq(D,betaPrior=TRUE,quiet=T)
@@ -170,18 +179,22 @@ for(i in unique(pClass)){
     if(i==j) next
     res <- results(dds,contrast = c("grp",i,j))
     strPair <- paste(strPairwised,j,".vs.",i,".txt",sep="")
+    x <- apply(normP[rownames(res),pClass==j,drop=F],1,mean)
+    y <- apply(normP[rownames(res),pClass==i,drop=F],1,mean)
+    normTag <- setNames(data.frame(row.names=rownames(res),y,x),paste("normTag",c(i,j),sep="_"))
+    meanLogFC <- apply(normTag,1,diff)
+    
     write.table(cbind(data.frame(res),contrast=paste(i,j,sep="-")),
                 file=strPair,sep="\t",quote=F,col.names=NA)
-    xIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange < -opt$logFC
-    yIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange > opt$logFC
+    xIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC < -opt$logFC
+    yIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC > opt$logFC
+    
     write.table(peakDef[rownames(res)[xIndex],],file=paste(strPair,j,".vs.",i,"_",j,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     write.table(peakDef[rownames(res)[yIndex],],file=paste(strPair,j,".vs.",i,"_",i,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     
     Col <- rep("gray",nrow(res))
     Col[xIndex] <- COL[j]
     Col[yIndex] <- COL[i]
-    x <- apply(normP[rownames(res),pClass==j,drop=F],1,mean)
-    y <- apply(normP[rownames(res),pClass==i,drop=F],1,mean)
     ylim <- xlim <- range(c(x,y))
     plot(c(),c(),xlab=j,ylab=i,xlim=xlim,ylim=ylim,main="log2 Mean normalized tag")
     for(k in c("gray",COL[c(i,j)])){
