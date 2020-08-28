@@ -185,10 +185,10 @@ for(i in unique(pClass)){
     normTag <- setNames(data.frame(row.names=rownames(res),y,x),paste("normTag",c(i,j),sep="_"))
     meanLogFC <- apply(normTag,1,diff)
     
-    write.table(cbind(data.frame(res),contrast=paste(i,j,sep="-")),
+    write.table(cbind(data.frame(res),contrast=paste(i,j,sep="-"),normTag),
                 file=strPair,sep="\t",quote=F,col.names=NA)
-    xIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC < -opt$logFC
-    yIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC > opt$logFC
+    xIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC < -opt$logFC & apply(normTag,1,max)>opt$minNormTag
+    yIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC > opt$logFC & apply(normTag,1,max)>opt$minNormTag
     
     write.table(peakDef[rownames(res)[xIndex],],file=paste(strPair,j,".vs.",i,"_",j,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     write.table(peakDef[rownames(res)[yIndex],],file=paste(strPair,j,".vs.",i,"_",i,".peak",sep=""),sep="\t",quote=F,col.names=NA)
