@@ -43,6 +43,8 @@ option_list = list(
               help="The distance from TSS, peaks within will be considered. If it is provided, '-d/--distal' will be ignored.", metavar="numeric"),
   make_option(c("-c", "--minNormTag"), type="numeric", default="4", 
               help="The minimal normalized tag counts of a peak [default= %default]", metavar="numeric"),
+  make_option(c("-n", "--minNormSample"), type="numeric", default="2", 
+              help="The minimal number of sample contain the normalized tag counts of a peak [default= %default]", metavar="numeric"),
   make_option(c("-m", "--maxPeak"), type="numeric", default="10000", 
               help="The maximum number of peaks to include in the heatmap [default= %default]", metavar="numeric"),
   make_option(c("-l", "--logFC"), type="numeric", default="1", 
@@ -128,7 +130,7 @@ if(max(libSize)>1e7){
   diag(nf) <- floor(max(libSize)/1e6)*1e6/libSize
 }else stop("Sequencing is TOO shallow (<1M), diff analysis cannot be performed reliably!")
 normC <- peakC%*%nf
-peakC <- peakC[apply(normC,1,function(x){return(sum(x>opt$minNormTag))})>1,]
+peakC <- peakC[apply(normC,1,function(x){return(sum(x>opt$minNormTag))})>=opt$minNormSample,]
 
 
 cat("\t\tTotal of",nrow(peakC),"peaks to be considered\n")

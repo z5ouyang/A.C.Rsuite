@@ -21,6 +21,8 @@ option_list = list(
               help="The distance from TSS to be considered enhancer region [default= %default]", metavar="numeric"),
   make_option(c("-f", "--minNormTag"), type="numeric", default="1", 
               help="The minimal normalized tag counts of a peak [default= %default]", metavar="numeric"),
+  make_option(c("-n", "--minNormSample"), type="numeric", default="1", 
+              help="The minimal number of sample contain the normalized tag counts of a peak [default= %default]", metavar="numeric"),
   make_option(c("-m", "--maxPeak"), type="numeric", default="10000", 
               help="The maximum number of peaks to include in the heatmap [default= %default]", metavar="character"),
   make_option(c("-l", "--logFC"), type="numeric", default="1", 
@@ -79,7 +81,8 @@ strAnno <- paste(strOutput,"peakQuan/allRawTags.txt",sep="")
 strCMD <- paste("peakDiff.R",strSample,
                 "-o",paste(strOutput,"/peakDiff/",sep=""),"-g",opt$genome,"-a",opt$assay,
                 "-q",strAnno,"-d",opt$distal,
-                "-c",opt$minNormTag,"-m",opt$maxPeak,
+                "-c",opt$minNormTag,"-n",opt$minNormSample,
+                "-m",opt$maxPeak,
                 "-l",opt$logFC,"-p",opt$padj)
 cat(strCMD,"\n")
 if(system(strCMD)!=0) stop("Error in Finding differential peaks for pair-wised groups!")
