@@ -119,7 +119,7 @@ if(!is.null(opt$tss)){
 }
 
 
-peakC <- peakC[apply(peakC,1,function(x){return(sum(x>opt$cutoff))})>1,]
+#peakC <- peakC[apply(peakC,1,function(x){return(sum(x>opt$cutoff))})>1,]
 #### obtain the normalized counts -----------------------
 nf <- matrix(0,nrow=length(libSize),ncol=length(libSize),dimnames = list(names(libSize),names(libSize)))
 if(max(libSize)>1e7){
@@ -132,6 +132,7 @@ peakC <- peakC[apply(normC,1,function(x){return(sum(x>opt$minNormTag))})>1,]
 
 
 cat("\t\tTotal of",nrow(peakC),"peaks to be considered\n")
+if(nrow(peakC)<100) stop("Too few peaks!")
 ## comparison ------------------------------
 cat("\n\tStep 3: Use DESeq2 to identify the pair-wised different peak heights\n")
 peakDef <- rawTags[rownames(peakC),1:4]
