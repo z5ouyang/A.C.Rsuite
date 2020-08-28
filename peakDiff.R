@@ -184,13 +184,13 @@ for(i in unique(pClass)){
     strPair <- paste(strPairwised,j,".vs.",i,".txt",sep="")
     x <- apply(normP[rownames(res),pClass==j,drop=F],1,mean)
     y <- apply(normP[rownames(res),pClass==i,drop=F],1,mean)
-    normTag <- setNames(data.frame(row.names=rownames(res),y,x),paste("normTag",c(i,j),sep="_"))
+    normTag <- setNames(data.frame(row.names=rownames(res),x,y),paste("normTag",c(j,i),sep="_"))
     meanLogFC <- apply(normTag,1,diff)
     
     write.table(cbind(data.frame(res),contrast=paste(i,j,sep="-"),normTag),
                 file=strPair,sep="\t",quote=F,col.names=NA)
-    xIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC < -opt$logFC & apply(normTag,1,max)>log2(opt$minNormTag)
-    yIndex <- !is.na(res$padj)&res$padj<opt$padj&meanLogFC > opt$logFC & apply(normTag,1,max)>log2(opt$minNormTag)
+    xIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange< -opt$logFC & meanLogFC < -opt$logFC & apply(normTag,1,max)>log2(opt$minNormTag)
+    yIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange> opt$logFC & meanLogFC > opt$logFC & apply(normTag,1,max)>log2(opt$minNormTag)
     
     write.table(peakDef[rownames(res)[xIndex],],file=paste(strPair,j,".vs.",i,"_",j,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     write.table(peakDef[rownames(res)[yIndex],],file=paste(strPair,j,".vs.",i,"_",i,".peak",sep=""),sep="\t",quote=F,col.names=NA)
