@@ -53,7 +53,7 @@ The RNA process pipeline includes the following steps. The user can choose any s
     - Plot the principle component analysis (PCA) of all samples with specified grouping colors defined in sample definition file in *overall.PCA.pdf*;
     - Calculate and plot the pair-wised TPM expression Pearson's correlation of all samples, as well as pair-wised TPM expression Pearson's correlation among replicates of each group. This is very important and useful to check the quality of the replicates;
     - Merge all replicates of a group to generate a tag directory per group in *mergeTag* folder;
-    - Make a UCSC genome browser hub file on homer server, user can easily add hub on UCSC by <div style="display: inline">http://homer.ucsd.edu/hubs/HUB NAME/hub.txt</div>
+    - Make a UCSC genome browser hub file on homer server, user can easily add hub on UCSC by <span>ht</span>tp://homer.ucsd.edu/hubs/*HUB NAME*/hub.txt
 3. `rnaDiff.R`, perform the differential expressed gene (DEG) analysis by DEG. It performs group pair-wised, **NOT** all groups together. The reason is that the pair-wised results are independent with how many groups are included as well as sample changes in other groups. And the results should NOT be much difference.
     - Additional options, such as logFC cutoff, FDR cutoff, are available, and **NO** need to run the whole pipeline again;
     - Please provide the *rawC.txt* and *rawT.txt* from *rnaQuan* folder to the DEG analysis.
