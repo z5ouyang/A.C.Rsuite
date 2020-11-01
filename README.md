@@ -17,7 +17,7 @@ The CLT was initially built in Chris Class lab @UCSD. If you have questions and 
 # Instruction
 There are two main pipelines, one is for standard RNA-Seq analysis; the other one is for ATAC-Seq and transcription factor (TF) ChIP-Seq. Currenly it dose not support broad peak assays such as histone ChIP. But you can use peaks from ATAC-seq to quantify them, such as H3K27ac ChIP-Seq.
 
-All commands below provide a help instruction by no parameter, such as `rnaPipe.R` in command line.
+:point_right:All commands below provide a help instruction by no parameter, such as `rnaPipe.R` in command line.:point_left:
 
 ## Prepare the sample definition file
 In order for the pipelines to know the locations of your samples of all groups/conditions, the sample definition file is required. It is a 4 column table for RNA-Seq or ATAC-Seq and 5 column table for ChIP-Seq. The table is 'tab' (*\t*) separated without header. Each row is a group.
