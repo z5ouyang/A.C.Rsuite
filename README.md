@@ -47,16 +47,16 @@ The RNA process pipeline includes the following steps. The user can choose any s
 
 1. `alignStats.R`, produces *alignStats.txt* file in the output directory. It contains all the mapping QC. This helps you to QC the sequencing.
 2. `rnaQuan.R`, produces raw count matrix and matching TPM matrix by ***homer*** in the folder named *rnaQuan* in the output directory.
-  - Obtain the raw count matrix by '-condenseGenes -count exons -noadj' options with ***homer***;
-  - Obtain the TPM without '-condenseGenes' options, then subset it with genes reported by above raw count matrix;
-  - Remove the short genes, as well as plot the gene length agaist mean and sd of expression, and *rawT.txt* as well as *rawC.txt* will be saved in *rnaQuan* folder;
-  - Plot the principle component analysis (PCA) of all samples with specified grouping colors defined in sample definition file in *overall.PCA.pdf*;
-  - Calculate and plot the pair-wised TPM expression Pearson's correlation of all samples, as well as pair-wised TPM expression Pearson's correlation among replicates of each group. This is very important and useful to check the quality of the replicates;
-  - Merge all replicates of a group to generate a tag directory per group in *mergeTag* folder;
-  - Make a UCSC genome browser hub file on homer server, user can easily add hub on UCSC by *http://homer.ucsd.edu/hubs/HUB NAME/hub.txt*
+    - Obtain the raw count matrix by '-condenseGenes -count exons -noadj' options with ***homer***;
+    - Obtain the TPM without '-condenseGenes' options, then subset it with genes reported by above raw count matrix;
+    - Remove the short genes, as well as plot the gene length agaist mean and sd of expression, and *rawT.txt* as well as *rawC.txt* will be saved in *rnaQuan* folder;
+    - Plot the principle component analysis (PCA) of all samples with specified grouping colors defined in sample definition file in *overall.PCA.pdf*;
+    - Calculate and plot the pair-wised TPM expression Pearson's correlation of all samples, as well as pair-wised TPM expression Pearson's correlation among replicates of each group. This is very important and useful to check the quality of the replicates;
+    - Merge all replicates of a group to generate a tag directory per group in *mergeTag* folder;
+    - Make a UCSC genome browser hub file on homer server, user can easily add hub on UCSC by *http://homer.ucsd.edu/hubs/HUB NAME/hub.txt*
 3. `rnaDiff.R`, perform the differential expressed gene (DEG) analysis by DEG. It performs group pair-wised, **NOT** all groups together. The reason is that the pair-wised results are independent with how many groups are included as well as sample changes in other groups. And the results should NOT be much difference.
-  - Additional options, such as logFC cutoff, FDR cutoff, are available, and **NO** need to run the whole pipeline again;
-  - Please provide the *rawC.txt* and *rawT.txt* from *rnaQuan* folder to the DEG analysis.
+    - Additional options, such as logFC cutoff, FDR cutoff, are available, and **NO** need to run the whole pipeline again;
+    - Please provide the *rawC.txt* and *rawT.txt* from *rnaQuan* folder to the DEG analysis.
 
 
 
