@@ -39,8 +39,8 @@ rnaPipe.R /path/to/sample/definition/file [-o /path/to/output/folder/ -g /genome
 - /path/to/output/folder/, the full path to the output directory
 - /genome/, hg38 or mm10, which has to be installed in ***homer***
 - /gene/length/cutoff, the numeric length cutoff for the small genes which will not be considered.
-- /UCSC/genome/track/name, the UCSC genome browser track will be generated, and can be added as <span>ht</span>tp://homer.ucsd.edu/hubs/*TRACK NAME*/hub.txt
-- /minimal/TPM/cutoff, the numeric minimal TPM cutoff,
+- /UCSC/genome/track/name, the UCSC genome browser track will be generated, and can be added as <span>ht</span>tp://homer.ucsd.edu/hubs/*TRACK NAME*/hub.txt. The default *TRACK NAME* is *SYSTEM USER NAME_Sample Definition File Name*.
+- /minimal/TPM/cutoff, the numeric minimal TPM cutoff
 
 ### RNA-Seq Pipeline Steps
 The RNA process pipeline includes the following steps. The user can choose any step to run or rerun. Some steps contain more options to use. You can type the command of each step, and a usage help with available options will show in the command line.
