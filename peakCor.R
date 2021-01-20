@@ -8,13 +8,13 @@ if(!require(optparse) || !require(MASS) || !require(pheatmap))
 args <- commandArgs(trailingOnly=TRUE)
 
 option_list = list(
-  make_option(c("-o", "--out"), type="character", default=dirname(args[1]), 
+  make_option(c("-o", "--out"), type="character", default=dirname(args[1]),
               help="Output directory path [default= %default]", metavar="character"),
-  make_option(c("-g", "--genome"), type="character", default="mm10", 
+  make_option(c("-g", "--genome"), type="character", default="mm10",
               help="The genome of the sequeces came from, mm10, hg38 [default= %default]", metavar="character"),
-  make_option(c("-a", "--assay"), type="character", default="atac", 
+  make_option(c("-a", "--assay"), type="character", default="atac",
               help="The assay type atac, chip and (future: histone) [default= %default]", metavar="character"),
-  make_option(c("-c", "--homer"), type="character", default=" -minDist 200 -size 200", 
+  make_option(c("-c", "--homer"), type="character", default=" -minDist 200 -size 200",
               help="Additional commands for homer peak calling [default= '%default']", metavar="character")
 )
 opt_parser = OptionParser("\n\t%prog path/to/the/sample/definition/file [options]",
@@ -88,7 +88,7 @@ for(i in 1:nrow(exps)){
     ## reading the peak information
     key <- "sID"
     value <- sIDs[j]
-    
+
     for(k in scan(tail(strPeak,1),character(),sep="\n",nlines=30,quiet=T)){
       if(grepl("=",k)){
         res <- unlist(strsplit(gsub("#","",k),"="))
@@ -100,7 +100,7 @@ for(i in 1:nrow(exps)){
     peakSumm <- rbind(peakSumm,value)
   }
   if(length(tags)<2) next
-  
+
   cat("\n\tStep 2: Mergeing all peaks from replicates for",grpID,"\n")
   strMerge <- paste(strTmp,"/",grpID,".peaks",sep="")
   strCMD <- paste("mergePeaks",paste(strPeak,collapse = " "),">",strMerge)
@@ -131,13 +131,15 @@ for(i in 1:nrow(exps)){
       if(is.null(names(tryM))){
         plot(c(),c(),xlab=sIDs[j],ylab=sIDs[k],xlim=limFun(f1$x),ylim=limFun(f1$y))
         index <- rep(T,nrow(tmp))
+        imgRange <- range(tmp[,1:2])
       }else{
         image(f1,col=imageCOL,xlab=sIDs[j],ylab=sIDs[k],xlim=limFun(f1$x),ylim=limFun(f1$y))
         imageZero <- diff(range(f1$z))/length(imageCOL)
         index <- apply(tmp,1,function(x,fit,cutZero){return(fit$z[sum((x[1]-fit$x)>=0),sum((x[2]-fit$y)>=0)]<cutZero)},f1,imageZero)
+        imgRange <- range(c(limFun(f1$x),limFun(f1$y)))
       }
       points(tmp[index,1],tmp[index,2],col=imageCOL[2],pch=20)
-      lines(range(c(limFun(f1$x),limFun(f1$y))),range(c(limFun(f1$x),limFun(f1$y))),col="gray")
+      lines(imgRange,imgRange,col="gray")
       COR[j,k] <- COR[k,j] <- cor(tmp[,1],tmp[,2])
       legend("topleft",paste("r=",round(COR[j,k],3)),bty="n")
     }
