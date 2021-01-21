@@ -6,11 +6,11 @@ if(!require(optparse))
 args <- commandArgs(trailingOnly=TRUE)
 
 option_list = list(
-  make_option(c("-o", "--out"), type="character", default=dirname(args[1]), 
+  make_option(c("-o", "--out"), type="character", default=dirname(args[1]),
               help="Output directory path [default= %default]", metavar="character"),
-  make_option(c("-a", "--assay"), type="character", default="atac", 
+  make_option(c("-a", "--assay"), type="character", default="atac",
               help="The assay type atac, chip and (future: histone) [default= %default]", metavar="character"),
-  make_option(c("-c", "--homer"), type="character", default=" -L 0 -C 0 -fdr 0.9 -minDist 200 -size 200", 
+  make_option(c("-c", "--homer"), type="character", default=" -L 0 -C 0 -fdr 0.9 -minDist 200 -size 200",
               help="Additional commands for homer peak calling [default= %default]", metavar="character")
 )
 opt_parser = OptionParser("\n\t%prog path/to/the/idr/sample/definition/file [options]",
@@ -88,7 +88,7 @@ for(i in 1:nrow(exps)){
       cat("\t\t",strCMD,"\n")
       #if(!file.exists(tail(strIDRs,1)))
       system(paste(strCMD,"2>/dev/null"))
-      if(!file.exists(tail(strIDRs,1))) stop(paste("IDR failed for",tail(strIDRs,1),"\nrerun the command again might solve the problem!"))
+      if(!file.exists(tail(strIDRs,1))) stop(paste("IDR failed for",tail(strIDRs,1),"\nPlease check your peak correlation result or rerun the command again might solve the problem!"))
     }
   }
   ## merge all pair-wised IDR peaks
@@ -113,15 +113,3 @@ cat("\t\t",strCMD,"\n")
 system(paste(strCMD,"2>/dev/null"))
 
 cat("\nThe IDR process are completed successfully!\n")
-
-
-
-
-
-
-
-
-
-
-
-

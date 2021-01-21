@@ -58,7 +58,11 @@ The RNA process pipeline includes the following steps. The user can choose any s
     - Additional options, such as logFC cutoff, FDR cutoff, are available, and **NO** need to run the whole pipeline again;
     - Please provide the *rawC.txt* and *rawT.txt* from *rnaQuan* folder to the DEG analysis.
 
+### Other useful notes
 
+1. `diff2Homer.R`, formatting the DEG table (...txt) back to homer format for other homer functions.
+
+## peakPipe.R
 
 
 
