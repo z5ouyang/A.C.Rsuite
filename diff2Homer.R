@@ -4,16 +4,17 @@ if(!suppressWarnings(suppressMessages(require(optparse)))) install.packages("opt
 args <- commandArgs(trailingOnly=TRUE)
 
 option_list = list(
-  make_option(c("-d", "--diff"), type="character", default=NULL,
+  make_option(c('--diff','-d'), action="store", type="character", dest="diff", default=NULL,
               help="The path to the differential analysis result file (txt) which is needed to restore to homer format", metavar="character"),
-  make_option(c("-h", "--homer"), type="character", default=NULL,
-              help="The path to the homer quantification file in either rnaQuan or peakQuan folder", metavar="character"),
+  make_option(c("--quan","-q"), action="store", type="character", dest="homer", default=NULL,
+              help="The path to the homer quantification file in either rnaQuan or peakQuan folder", metavar="character")
 )
 opt_parser = OptionParser("\n\t%prog [options]",
                           option_list=option_list,prog="diff2Homer.R")
 if (length(args)<1){
   print_help(opt_parser)
-  stop("diff2Homer.R -d .../...vs...txt -h .../rnaQuan/HOMER.rawCount.txt\ndiff2Homer.R -d .../...vs...txt -h .../peakQuan/allRawTags.txt\n", call.=FALSE)
+  message("diff2Homer.R -d .../...vs...txt -h .../rnaQuan/HOMER.rawCount.txt\ndiff2Homer.R -d .../...vs...txt -h .../peakQuan/allRawTags.txt\n")
+  q()
 }
 opt = parse_args(opt_parser,args)
 if(!file.exists(opt$diff)) stop(paste0("The differential result file (",opt$diff,") cannot be loacated!"))
