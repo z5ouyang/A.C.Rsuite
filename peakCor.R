@@ -128,15 +128,14 @@ for(i in 1:nrow(exps)){
       index <- apply(reads[,c(j,k)],1,max)>0
       tmp <- reads[index,c(j,k)]
       tryM <- try(f1 <- kde2d(tmp[,1],tmp[,2],n=500),silent=T)
+      imgRange <- range(tmp[,1:2])
       if(is.null(names(tryM))){
-        plot(c(),c(),xlab=sIDs[j],ylab=sIDs[k],xlim=limFun(f1$x),ylim=limFun(f1$y))
+        plot(c(),c(),xlab=sIDs[j],ylab=sIDs[k],xlim=imgRange,ylim=imgRange)
         index <- rep(T,nrow(tmp))
-        imgRange <- range(tmp[,1:2])
       }else{
-        image(f1,col=imageCOL,xlab=sIDs[j],ylab=sIDs[k],xlim=limFun(f1$x),ylim=limFun(f1$y))
+        image(f1,col=imageCOL,xlab=sIDs[j],ylab=sIDs[k],xlim=imgRange,ylim=imgRange)
         imageZero <- diff(range(f1$z))/length(imageCOL)
         index <- apply(tmp,1,function(x,fit,cutZero){return(fit$z[sum((x[1]-fit$x)>=0),sum((x[2]-fit$y)>=0)]<cutZero)},f1,imageZero)
-        imgRange <- range(c(limFun(f1$x),limFun(f1$y)))
       }
       points(tmp[index,1],tmp[index,2],col=imageCOL[2],pch=20)
       lines(imgRange,imgRange,col="gray")
