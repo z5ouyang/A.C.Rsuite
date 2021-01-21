@@ -22,7 +22,7 @@ if(!file.exists(opt$homer)) stop(paste0("The homer quantification file (",opt$ho
 
 D <- read.table(opt$diff,sep="\t",header=T,as.is=T,row.names=1,check.names=F,quote="",comment.char="")
 H <- read.table(opt$homer,sep="\t",header=T,as.is=T,row.names=1,check.names=F,quote="",comment.char="")
-pID <- scan(opt$homer,character(),n=1,sep="\t")
+pID <- scan(opt$homer,character(),n=1,sep="\t",quiet=T)
 
 if(sum(rownames(D)%in%rownames(H))<sum(rownames(D)%in%sapply(strsplit(H[,7],"\\|"),head,1))){#RNA
   ix <- sapply(strsplit(H[,7],"\\|"),head,1) %in% rownames(D)
@@ -33,4 +33,7 @@ if(sum(rownames(D)%in%rownames(H))<sum(rownames(D)%in%sapply(strsplit(H[,7],"\\|
   message("There are ",sum(!ix)," peaks not found in differential analysis")
   X <- cbind(H[ix,1:18],D[rownames(H)[ix],])
 }
-write.table(X,file=gsub("txt","homer.txt",opt$diff),col.names=c(pID,colnames(X)),quote=F,sep="\t")
+conn <- file(gsub("txt","homer.txt",opt$diff),"w")
+cat(pID,"\t",file=conn,sep="")
+write.table(X,file=conn,quote=F,sep="\t")
+close(conn)
