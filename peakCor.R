@@ -129,10 +129,13 @@ for(i in 1:nrow(exps)){
       tmp <- reads[index,c(j,k)]
       tryM <- try(f1 <- kde2d(tmp[,1],tmp[,2],n=500),silent=T)
       imgRange <- range(tmp[,1:2])
+      message(imgRange)
       if(is.null(names(tryM))){
+        message("f1 faild")
         plot(c(),c(),xlab=sIDs[j],ylab=sIDs[k],xlim=imgRange,ylim=imgRange)
         index <- rep(T,nrow(tmp))
       }else{
+        message("f1 successed")
         image(f1,col=imageCOL,xlab=sIDs[j],ylab=sIDs[k],xlim=imgRange,ylim=imgRange)
         imageZero <- diff(range(f1$z))/length(imageCOL)
         index <- apply(tmp,1,function(x,fit,cutZero){return(fit$z[sum((x[1]-fit$x)>=0),sum((x[2]-fit$y)>=0)]<cutZero)},f1,imageZero)
