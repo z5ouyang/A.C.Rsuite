@@ -29,7 +29,7 @@ strF <- basename(opt$H3Kquan)
 if(sum(grepl(strF,mergeP[,6]))==0) stop(paste0("The narrow peaks (",opt$H3Kquan,") used for H3K quantification is NOT used for mergePeak (",opt$peak,")!"))
 mergeP <- mergeP[grepl(strF,mergeP[,6]),]
 colIndex <- 7+ which(nchar(mergeP[mergeP[,7]==1,][1,8:ncol(mergeP)])>0)
-if(sum(!rownames(H3K)%in%unlist(strsplit(mergeP[,colIndex],",")))!=0) stop(past0("The narrow peaks (",opt$H3Kquan,") used for mergePeaks is NOT used for H3K quantification!"))
+if(sum(!rownames(H3K)%in%unlist(strsplit(mergeP[,colIndex],",")))!=0) stop(paste0("The narrow peaks (",opt$H3Kquan,") used for mergePeaks is NOT used for H3K quantification!"))
 D <- data.frame(table(mergeP[sapply(mergeP[,colIndex],function(x)return(sum(unlist(strsplit(x,","))%in%rownames(H3K))>0)),6]))
 colnames(D) <- c('Overlap','Freq')
 write.csv(D,file=paste0(opt$H3K,".splitMerge.csv"),row.names=F,quote=F)
