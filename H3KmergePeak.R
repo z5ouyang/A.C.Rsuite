@@ -17,6 +17,7 @@ opt_parser = OptionParser("\n\t%prog [options]",
 if (length(args)<1){
   print_help(opt_parser)
   message("H3KmergePeak.R -h .../...act.peak -q .../...idr -p .../mergedPeaks...txt\n")
+  message("The result csv & pie chart will be located in the same folder as input broad peak file.\n")
   q()
 }
 opt = parse_args(opt_parser,args)
