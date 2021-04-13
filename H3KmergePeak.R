@@ -6,11 +6,11 @@ args <- commandArgs(trailingOnly=TRUE)
 
 option_list = list(
   make_option(c('--H3K','-k'), action="store", type="character", dest="H3K", default=NULL,
-              help="The path to the differential peaks (from peakDiff.R) from broad peaks, such as H3K27ac at ATAC peak center +/- 500", metavar="character"),
+              help="The path to the differential peaks (from peakDiff.R) from broad peaks, such as H3K27ac at narrow peak center (such as ATAC) +/- 500", metavar="character"),
   make_option(c("--H3Kquan","-q"), action="store", type="character", dest="H3Kquan", default=NULL,
-              help="The path to the peak file was used to quantify H3K broad signal, and also was used to merge with other small peaks", metavar="character"),
+              help="The path to the narrow peak file which was used to quantify H3K broad signal, and also was used to merge with other narrow peaks", metavar="character"),
   make_option(c("--peak","-p"), action="store", type="character", dest="peak", default=NULL,
-              help="The path to the merged small peak (~200 from TF ChIP/ATAC), one of which is used to quantify the H3K27ac", metavar="character")
+              help="The path to the merged narrow peaks (~200 from TF ChIP/ATAC), one of which is used to quantify the H3K27ac", metavar="character")
 )
 opt_parser = OptionParser("\n\t%prog [options]",
                           option_list=option_list,prog="H3KmergePeak.R")
@@ -26,9 +26,10 @@ if(!file.exists(opt$peak)) stop(paste0("The mergePeak file (",opt$peak,") cannot
 H3K <- read.table(opt$H3K,sep="\t",header=T,as.is=T,row.names=1)
 mergeP <- read.table(opt$peak,sep="\t",as.is=T,row.names=1)
 strF <- basename(opt$H3Kquan)
-if(sum(grepl(strF,mergeP[,6]))==0) stop(paste0("The mergePeak file didn't use H3K quantification peak (",opt$H3Kquan,")!"))
+if(sum(grepl(strF,mergeP[,6]))==0) stop(paste0("The narrow peaks (",opt$H3Kquan,") used for H3K quantification is NOT used for mergePeak (",opt$peak,")!"))
 mergeP <- mergeP[grepl(strF,mergeP[,6]),]
 colIndex <- 7+ which(nchar(mergeP[mergeP[,7]==1,][1,8:ncol(mergeP)])>0)
+if(sum(!rownames(H3K)%in%unlist(strsplit(mergeP[,colIndex],",")))!=0) stop(past0("The narrow peaks (",opt$H3Kquan,") used for mergePeaks is NOT used for H3K quantification!"))
 D <- data.frame(table(mergeP[sapply(mergeP[,colIndex],function(x)return(sum(unlist(strsplit(x,","))%in%rownames(H3K))>0)),6]))
 colnames(D) <- c('Overlap','Freq')
 write.csv(D,file=paste0(opt$H3K,".splitMerge.csv"),row.names=F,quote=F)
