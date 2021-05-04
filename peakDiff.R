@@ -29,29 +29,29 @@ suppressWarnings(suppressMessages(loadPeakDiff()))
 args <- commandArgs(trailingOnly=TRUE)
 
 option_list = list(
-  make_option(c("-o", "--out"), type="character", default=dirname(args[1]), 
+  make_option(c("-o", "--out"), type="character", default=dirname(args[1]),
               help="Output directory path [default= %default].", metavar="character"),
-  make_option(c("-g", "--genome"), type="character", default="mm10", 
+  make_option(c("-g", "--genome"), type="character", default="mm10",
               help="The genome of the sequeces came from, mm10, hg38 [default= %default]", metavar="character"),
-  make_option(c("-a", "--assay"), type="character", default="atac", 
+  make_option(c("-a", "--assay"), type="character", default="atac",
               help="The assay type atac, chip and (future: histone) [default= %default], if chip, DESeq library size will be set to sequence depth instead of total tags in peaks", metavar="character"),
-  make_option(c("-q", "--qantify"), type="character", #default="", 
+  make_option(c("-q", "--qantify"), type="character", #default="",
               help="The full path to the peak qantification file [default= %default].", metavar="character"),
-  make_option(c("-d", "--distal"), type="numeric", default="3000", 
+  make_option(c("-d", "--distal"), type="numeric", default="3000",
               help="The distance from TSS, peaks outside will be considered [default= %default]", metavar="numeric"),
-  make_option(c("-t", "--tss"), type="numeric", default=NULL, 
+  make_option(c("-t", "--tss"), type="numeric", default=NULL,
               help="The distance from TSS, peaks within will be considered. If it is provided, '-d/--distal' will be ignored.", metavar="numeric"),
-  make_option(c("-c", "--minNormTag"), type="numeric", default="4", 
+  make_option(c("-c", "--minNormTag"), type="numeric", default="4",
               help="The minimal normalized tag counts of a peak [default= %default]", metavar="numeric"),
-  make_option(c("-n", "--minNormSample"), type="numeric", default="2", 
+  make_option(c("-n", "--minNormSample"), type="numeric", default="2",
               help="The minimal number of sample contain the normalized tag counts of a peak [default= %default]", metavar="numeric"),
-  make_option(c("-m", "--maxPeak"), type="numeric", default="10000", 
+  make_option(c("-m", "--maxPeak"), type="numeric", default="10000",
               help="The maximum number of peaks to include in the heatmap [default= %default]", metavar="numeric"),
-  make_option(c("-l", "--logFC"), type="numeric", default="1", 
+  make_option(c("-l", "--logFC"), type="numeric", default="1",
               help="The log fold change to be considered significant [default= %default]", metavar="numeric"),
-#  make_option(c("-c", "--homer"), type="character", default="", 
+#  make_option(c("-c", "--homer"), type="character", default="",
 #              help="Additional commands for homer peak annotation (annotatePeaks.pl) [default= %default]", metavar="character"),
-  make_option(c("-p", "--padj"), type="numeric", default="0.05", 
+  make_option(c("-p", "--padj"), type="numeric", default="0.05",
               help="The significant p-adj to be considered significant [default= %default]", metavar="numeric")
 )
 opt_parser = OptionParser("\n\t%prog path/to/the/sample/definition/file [options]",
@@ -92,7 +92,7 @@ for(i in rownames(tagInfo)){
   message("\t",i)
   message("\t\tTag directory number:",length(oneTag),"; sample name number:",length(oneID))
   if(length(oneTag)!=length(oneID)) stop("Tags are not matching with sample Name")
-  sID <- c(sID,oneID)  
+  sID <- c(sID,oneID)
   pClass <- c(pClass,rep(i,length(sID)-length(pClass)))
   COL <- c(COL,tagInfo[i,1])
 }
@@ -144,7 +144,7 @@ pheno <- data.frame(row.names = colnames(peakC),grp=pClass)
 
 if(opt$assay=="chip"){
   cat("\t\tsequence depth was set to be the library size normalization for ChIP, \n\t\tthis is consistent with the track\n")
-  peakC <- normC
+  peakC <- normC[rownames(peakC),]
   D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(peakC),nrow=nrow(peakC),dimnames=dimnames(peakC)),
                               colData=pheno,
                               design=as.formula(paste("~",paste(colnames(pheno),collapse="+"))))
@@ -159,7 +159,7 @@ if(opt$assay=="chip"){
 }
 
 normP <- log2(counts(dds,normalized=T)+1)
-## save the results for each pair-wised comparison 
+## save the results for each pair-wised comparison
 allDBP <- strUpPeak <- c()
 strPairwised <- paste(strOutput,"/pairwised/",sep="")
 if(!dir.exists(strPairwised)) dir.create(strPairwised)
@@ -186,15 +186,15 @@ for(i in unique(pClass)){
     y <- apply(normP[rownames(res),pClass==i,drop=F],1,mean)
     normTag <- setNames(data.frame(row.names=rownames(res),x,y),paste("normTag",c(j,i),sep="_"))
     meanLogFC <- apply(normTag,1,diff)
-    
+
     write.table(cbind(data.frame(res),contrast=paste(i,j,sep="-"),normTag),
                 file=strPair,sep="\t",quote=F,col.names=NA)
     xIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange< -opt$logFC & meanLogFC < -opt$logFC & apply(normTag,1,max)>log2(opt$minNormTag)
     yIndex <- !is.na(res$padj)&res$padj<opt$padj&res$log2FoldChange> opt$logFC & meanLogFC > opt$logFC & apply(normTag,1,max)>log2(opt$minNormTag)
-    
+
     write.table(peakDef[rownames(res)[xIndex],],file=paste(strPair,j,".vs.",i,"_",j,".peak",sep=""),sep="\t",quote=F,col.names=NA)
     write.table(peakDef[rownames(res)[yIndex],],file=paste(strPair,j,".vs.",i,"_",i,".peak",sep=""),sep="\t",quote=F,col.names=NA)
-    
+
     Col <- rep("gray",nrow(res))
     Col[xIndex] <- COL[j]
     Col[yIndex] <- COL[i]
@@ -217,7 +217,7 @@ for(i in unique(pClass)){
     lines(range(c(xlim,ylim)),range(c(xlim,ylim))-opt$logFC,col="gray",lty=2)
     mtext(paste(i,": ",sum(yIndex),sep=""),3,line=-1,adj=0.1,col=COL[i])
     mtext(paste(j,": ",sum(xIndex),sep=""),4,line=-1,adj=0.1,col=COL[j])
-    
+
     peakID <- c(peakID,rownames(res)[yIndex])
   }
   peakID <- unique(peakID)
@@ -279,19 +279,3 @@ system(paste(strCMD,"2>/dev/null"))
 
 ## ---------------------
 cat("\nDifferential analysis is done successfully!\n")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
