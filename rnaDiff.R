@@ -193,6 +193,20 @@ for(i in unique(pClass)){
   }
 }
 ## overall differential genes ------------------
+DEGorder <- function(degTPM,pClass){
+  meanTPM <- c()
+  for(i in unique(pClass)){
+    meanTPM <- cbind(meanTPM,apply(degTPM[,pClass==i],1,mean))
+  }
+  colnames(meanTPM) <- unique(pClass)
+  ix <- apply(meanTPM,1,function(x)return(names(x)[x==max(x)]))
+  g <- list()
+  for(i in unique(pClass)){
+    gT <- names(ix)[ix==i]
+    g[[i]] <- gT[order(apply(meanTPM[gT,],1,function(x)return(min(x[i]-x[-which(names(x)==i)]))),decreasing=T)]
+  }
+  return(g)
+}
 DEG <- unique(DEG)
 write.csv(matrix(DEG,ncol=1),file=paste(opt$out,"/overall.heatmap.txt",sep=""),quote=F,col.names=F)
 if(length(DEG)>3){
@@ -209,9 +223,24 @@ if(length(DEG)>3){
            color = heatCol,main=paste("Overall on",length(DEG),"DEGs (Z-score on TPM)"),
            annotation_col = data.frame(row.names=colnames(rawT),grp=pClass))
   pheatmap(log2(1+rawT[DEG,]),annotation_colors=list(grp=COL),scale="row",cluster_cols=F,
-           labels_row=rep("",length(DEG)),
+           show_rownames=F,
            color = heatCol,main=paste("Overall on",length(DEG),"DEGs (Z-score on TPM)"),
            annotation_col = data.frame(row.names=colnames(rawT),grp=pClass))
+  
+  g <- DEGorder(log2(1+rawT[DEG,]),pClass)
+  gOrder <- unlist(g)
+  pheatmap(log2(1+rawT[gOrder,]),scale="row",
+           cluster_cols=F,cluster_rows=F,
+           show_rownames=F,
+           color = heatCol,main=paste("Overall on",length(gOrder),"DEGs (Z-score on TPM)"),
+           annotation_col = data.frame(row.names=colnames(rawT),grp=pClass),
+           annotation_colors=list(grp=COL))
+  gList <- c()
+  for(i in names(g)){
+    gList <- c(gList,paste("===",i,"==="),g[[i]])
+  }
+  cat(paste(gList,collapse="\n"),file=paste0(opt$out,"/overall.heatmap_lastpage.txt"))
+  
   a <- dev.off()
 }
 
