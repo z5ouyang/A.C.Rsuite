@@ -10,15 +10,15 @@ if(!require(optparse) || !require(DESeq2) || !require(pheatmap) || !require(MASS
 
 args <- commandArgs(trailingOnly=TRUE)
 option_list = list(
-  make_option(c("-o", "--out"), type="character", default=dirname(args[1]), 
+  make_option(c("-o", "--out"), type="character", default=dirname(args[1]),
               help="Output directory path [default= %default]", metavar="character"),
-  make_option(c("-c", "--counts"), type="character", #default="mm10", 
+  make_option(c("-c", "--counts"), type="character", #default="mm10",
               help="required. The path to the raw counts file which only contains sample columns.", metavar="character"),
-  make_option(c("-t", "--tpm"), type="character", #default="250", 
+  make_option(c("-t", "--tpm"), type="character", #default="250",
               help="required. The path to the TPM file which only contains sample columns.", metavar="character"),
-  make_option(c("-m", "--minTPM"), type="numeric", default="8", 
+  make_option(c("-m", "--minTPM"), type="numeric", default="8",
               help="The minumal TPM required in at least 2 samples", metavar="character"),
-  make_option(c("-f", "--logFC"), type="numeric", default="1", 
+  make_option(c("-f", "--logFC"), type="numeric", default="1",
               help="The minumal absolute log2 fold change to be considered as differentially expressed genes", metavar="character")
 )
 opt_parser = OptionParser("\n\t%prog path/to/the/sample/definition/file [options]",
@@ -75,7 +75,7 @@ DESeq2.scatter <- function(X,pClass,strPath,COL,cutOff=4,showX=NULL,logFC=1,padj
   }
   if(!is.null(showX)) Data <- X[apply(showX,1,function(x){sum(x>cutOff)})>1,]
   else Data <- X[apply(X,1,function(x){sum(x>cutOff)})>1,]
-  
+
   pheno <- data.frame(row.names=colnames(Data),grp=pClass)
   D <- DESeqDataSetFromMatrix(countData=matrix(as.integer(round(Data)),nrow=nrow(Data),dimnames=dimnames(Data)),
                               colData=pheno,
@@ -85,7 +85,7 @@ DESeq2.scatter <- function(X,pClass,strPath,COL,cutOff=4,showX=NULL,logFC=1,padj
   else Data <- log2(counts(dds,normalized=T)+1)
   if(nchar(prefix)>0) prefix <- paste(prefix,"_",sep="")
   strF <- paste(strPath,"/",prefix,paste(rev(com),collapse=".vs."),".scatter.pdf",sep="")
-  
+
   ## save the DESeq2 diff results
   res <- cbind(data.frame(results(dds,contrast=c("grp",com))),contrast=paste(com,collapse="-"))
   write.table(res,file=gsub("pdf$","txt",strF),sep="\t",col.names = NA,quote=F)
@@ -98,7 +98,7 @@ DESeq2.scatter <- function(X,pClass,strPath,COL,cutOff=4,showX=NULL,logFC=1,padj
   Col[sigY] <- COL[1]
   x <- apply(Data[,pClass==com[2]],1,mean)
   y <- apply(Data[,pClass==com[1]],1,mean)
-  
+
   pdf(strF,width=4,height=4,useDingbats = F)
   par(mar=c(2,2,2,0)+0.2,mgp=c(1,0,0),tcl=-0.02)
   ## plot scatter dots -----------
@@ -131,7 +131,7 @@ DESeq2.scatter <- function(X,pClass,strPath,COL,cutOff=4,showX=NULL,logFC=1,padj
       points(x[Col==i],y[Col==i],pch=20,col=paste(i,"80",sep=""),cex=1)
     text(x[Col!="gray"],y[Col!="gray"],rownames(Data)[Col!="gray"],cex=0.3)
   }
- 
+
   ## volcano plots ----------------------
   s <- -log10(res$padj)
   s[is.infinite(s)] <- max(s[is.finite(s)])*1.05
@@ -142,7 +142,7 @@ DESeq2.scatter <- function(X,pClass,strPath,COL,cutOff=4,showX=NULL,logFC=1,padj
   meanT <- apply(cbind(x,y),1,mean)
   par(mar=c(2,2,1,7)+0.2,mgp=c(1,0,0),tcl=-0.02,xpd=T)
   plot(c(),c(),xlim=range(logFC),ylim=range(meanT),xlab=paste("logFC(",paste(com,collapse="/"),")"),ylab="Mean log2(TPM+1)",main=title)
-  for(i in order(s,decreasing=T)) 
+  for(i in order(s,decreasing=T))
     if(s[i]>min(median(s),sLegend[1]))
       draw.circle(logFC[i],
                   meanT[i],
@@ -203,7 +203,8 @@ DEGorder <- function(degTPM,pClass){
   g <- list()
   for(i in unique(pClass)){
     gT <- names(ix)[ix==i]
-    g[[i]] <- gT[order(apply(meanTPM[gT,],1,function(x)return(min(x[i]-x[-which(names(x)==i)]))),decreasing=T)]
+    if(length(gT)==0) g[[i]] <- NULL
+    else  g[[i]] <- gT[order(apply(meanTPM[gT,,drop=F],1,function(x)return(min(x[i]-x[-which(names(x)==i)]))),decreasing=T)]
   }
   return(g)
 }
@@ -226,7 +227,7 @@ if(length(DEG)>3){
            show_rownames=F,
            color = heatCol,main=paste("Overall on",length(DEG),"DEGs (Z-score on TPM)"),
            annotation_col = data.frame(row.names=colnames(rawT),grp=pClass))
-  
+
   g <- DEGorder(log2(1+rawT[DEG,]),pClass)
   gOrder <- unlist(g)
   pheatmap(log2(1+rawT[gOrder,]),scale="row",
@@ -240,16 +241,9 @@ if(length(DEG)>3){
     gList <- c(gList,paste("===",i,"==="),g[[i]])
   }
   cat(paste(gList,collapse="\n"),file=paste0(opt$out,"/overall.heatmap_lastpage.txt"))
-  
+
   a <- dev.off()
 }
 
 ## ---------------
 cat("\nDifferential analysis is done successfully!\n")
-
-
-
-
-
-
-
