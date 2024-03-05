@@ -231,7 +231,15 @@ for(i in rownames(sInfo)){
     cat(basename(j),"\t",tail(fragL,1),"\n",file=conn)
   }
   system(paste("cp ",strTag,"/tagInfo.txt ",strTag,"/tagInfo_ori.txt",sep=""))
-  tagInfo <- read.table(paste(strTag,"/tagInfo_ori.txt",sep=""),sep="\t",as.is=T,header=T,check.names=F)
+  #in case of paired END, the tagInfo is not a table: pairedEnd=true no "\t"
+  A <- readLines(file.path(strTag,"tagInfo_ori.txt"))
+  An <- stringr::str_count(A,"\t")
+  for(i in seq_along(An)[An!=max(An)]){
+    A[i] <- paste(c(A[i],rep("\t",max(An)-An[i])),collapse="")
+  }
+  writeLines(A,file.path(strTag,"tagInfo_ori.txt"))
+  ###
+  tagInfo <- read.table(file.path(strTag,"tagInfo_ori.txt"),sep="\t",as.is=T,header=T,check.names=F)
   tagInfo[grepl("fragmentLengthEstimate",tagInfo[,1]),1] <- paste("fragmentLengthEstimate",round(mean(fragL)),sep="=")
   write.table(tagInfo,file=paste(strTag,"/tagInfo.txt",sep=""),sep="\t",row.names=F,quote=F,na="")
 }
